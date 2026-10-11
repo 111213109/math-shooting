@@ -1,0 +1,25 @@
+因數與倍數特戰靶場 v3.7
+
+這是目前網站最新版的完整網頁原始碼，可用 Antigravity 開啟並修改。
+
+玩法：第一、三關為遠距離移動靶；第二關為慢速喪屍，頭頂顯示小字母。
+喪屍突破防線扣 20 血、本題算錯、自動換題；血量歸零結束。
+
+啟動方式：
+1. 先完整解壓縮 ZIP。
+2. 電腦可先試著用 Chrome／Edge 開啟 index.html。
+3. 若直接開檔受瀏覽器限制，可在此資料夾執行：
+   python -m http.server 8000
+   然後瀏覽 http://localhost:8000
+   （需先安裝 Python；Windows 也可用 py -m http.server 8000。）
+4. Antigravity：開啟解壓縮後的整個資料夾，用本機預覽或靜態伺服器啟動。
+5. 手機／平板：建議使用原網站網址，或將此資料夾部署到靜態網站主機。
+
+原網站：https://factor-math-training.ivoryelm16.chatgpt.site
+
+注意：原版擊殺與 Discord 音效從外站載入，需要網路。
+外站無法播放時會自動使用合成替代音效；Three.js 已包含在 lib 資料夾。
+學生成績與教師頁資料儲存在各自瀏覽器，並非跨裝置共用資料庫。
+
+檔案：index.html（遊戲）、teacher.html（教師頁）、js（邏輯）、css（樣式）、data（題目）、lib（3D函式庫）。
+修改本 ZIP 不會自動更新原網站；仍需重新部署。

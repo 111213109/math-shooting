@@ -1,0 +1,446 @@
+/**
+ * game.css - 特戰英豪風格遊戲視窗、HUD抬頭顯示器與戰術介面
+ */
+
+/* 頂部戰術狀態欄 HUD */
+.tactical-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(15, 25, 35, 0.95);
+  border-bottom: 2px solid rgba(236, 232, 225, 0.15);
+  position: relative;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.hud-user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hud-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--val-red), #931420);
+  clip-path: var(--val-clip-corner-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--val-font-display);
+  font-weight: 700;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hud-metrics {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.hud-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.hud-stat-label {
+  font-family: var(--val-font-display);
+  font-size: 11px;
+  color: var(--val-gray-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.hud-stat-val {
+  font-family: var(--val-font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--val-gray-light);
+  line-height: 1.1;
+}
+
+.hud-stat-val.cyan {
+  color: var(--val-cyan);
+  text-shadow: 0 0 10px var(--val-cyan-glow);
+}
+
+.hud-stat-val.red {
+  color: var(--val-red);
+  text-shadow: 0 0 10px rgba(255, 70, 85, 0.6);
+}
+
+.hud-stat-val.gold {
+  color: var(--val-gold);
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.6);
+}
+
+/* 關卡選單 Grid */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.level-card {
+  position: relative;
+  background: rgba(23, 34, 46, 0.9);
+  border: 1px solid var(--val-border);
+  clip-path: var(--val-clip-corner);
+  padding: 28px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 380px;
+}
+
+.level-card:hover:not(.locked) {
+  border-color: var(--val-cyan);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 245, 212, 0.2);
+}
+
+.level-card.locked {
+  opacity: 0.6;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+}
+
+.level-card.locked::before {
+  content: "🔒 需要達到 85 分以解鎖";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  font-family: var(--val-font-display);
+  background: rgba(255, 70, 85, 0.3);
+  color: var(--val-red);
+  padding: 3px 8px;
+  clip-path: var(--val-clip-corner-sm);
+  border: 1px solid var(--val-red);
+}
+
+.level-number-tag {
+  font-family: var(--val-font-display);
+  font-size: 44px;
+  font-weight: 900;
+  color: rgba(236, 232, 225, 0.15);
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  line-height: 1;
+}
+
+/* 遊戲主視窗 */
+.game-viewport-container {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 70px);
+  min-height: 550px;
+  background: #06090e;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+#gameCanvas2D, #gameCanvas3D {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 遊戲中任務目標橫幅 (Mission Prompt Bar) */
+.mission-prompt-bar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 25, 35, 0.92);
+  border: 1px solid var(--val-cyan);
+  clip-path: var(--val-clip-corner-sm);
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 245, 212, 0.3);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  max-width: 90%;
+  text-align: center;
+}
+
+.mission-tag {
+  background: var(--val-red);
+  color: #fff;
+  font-family: var(--val-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+}
+
+.mission-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.8px;
+}
+
+/* 戰術小地圖雷達 (Level 2 3D Minimap) */
+.radar-minimap {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 25, 35, 0.85) 0%, rgba(11, 17, 23, 0.95) 100%);
+  border: 2px solid var(--val-cyan);
+  box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.radar-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 300deg, rgba(0, 245, 212, 0.4) 360deg);
+  animation: radarScan 3s linear infinite;
+}
+
+@keyframes radarScan {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radar-center-blip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ffffff;
+}
+
+#radarCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 連擊與擊殺提示 (Kill Banner / Combo) */
+.kill-banner {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  font-family: var(--val-font-display);
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--val-red);
+  text-shadow: 0 0 20px rgba(255, 70, 85, 0.8), 0 0 35px #000;
+  letter-spacing: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 80;
+  text-align: center;
+}
+
+.kill-banner.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.kill-subtext {
+  font-size: 18px;
+  color: var(--val-cyan);
+  text-shadow: 0 0 10px var(--val-cyan-glow);
+  margin-top: 4px;
+}
+
+/* 戰術血條與護盾條 (Defense HP in Level 2) */
+.barrier-hp-box {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(15, 25, 35, 0.9);
+  padding: 12px 18px;
+  border: 1px solid var(--val-border);
+  clip-path: var(--val-clip-corner-sm);
+  z-index: 50;
+  min-width: 220px;
+}
+
+.hp-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-top: 6px;
+  clip-path: var(--val-clip-corner-sm);
+  overflow: hidden;
+}
+
+.hp-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--val-cyan), #38ef7d);
+  transition: width 0.3s ease;
+}
+
+.hp-bar-fill.danger {
+  background: linear-gradient(90deg, var(--val-red), #ff758c);
+}
+
+/* 答錯鷹架提示視窗 (Remediation Modal) */
+.remediation-box {
+  border-left: 6px solid var(--val-red);
+}
+
+.remediation-concept {
+  background: rgba(255, 70, 85, 0.12);
+  border: 1px dashed rgba(255, 70, 85, 0.4);
+  padding: 14px;
+  margin: 14px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.remediation-hint {
+  background: rgba(0, 245, 212, 0.1);
+  border: 1px solid rgba(0, 245, 212, 0.3);
+  padding: 14px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1.6;
+}
+
+/* 結算星級展示 (Victory Star Display) */
+.stars-huge {
+  font-size: 52px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stars-huge .star {
+  color: rgba(236, 232, 225, 0.18);
+  transition: all 0.5s ease;
+  transform: scale(0.9);
+}
+
+.stars-huge .star.active {
+  color: var(--val-gold);
+  transform: scale(1.15);
+  text-shadow: 0 0 25px rgba(255, 209, 102, 0.8);
+}
+
+/* 特戰英豪戰術準心 */
+.tactical-crosshair {
+  position: absolute;
+  pointer-events: none;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
+  z-index: 90;
+  transition: transform 0.05s linear;
+}
+
+.tactical-crosshair::before,
+.tactical-crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--val-cyan);
+  box-shadow: 0 0 6px var(--val-cyan);
+}
+
+.tactical-crosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.tactical-crosshair::after {
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.crosshair-center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--val-red);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--val-red);
+}
+
+/* 行動裝置支援控制 (Mobile Controls) */
+.mobile-touch-trigger {
+  display: none;
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 70, 85, 0.8);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  z-index: 100;
+  box-shadow: 0 0 20px rgba(255, 70, 85, 0.8);
+  align-items: center;
+  justify-content: center;
+  font-family: var(--val-font-display);
+  font-weight: 900;
+  color: #fff;
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+@media (max-width: 900px) {
+  .mobile-touch-trigger {
+    display: flex;
+  }
+  .radar-minimap {
+    width: 120px;
+    height: 120px;
+    bottom: 120px;
+  }
+  .mission-prompt-bar {
+    width: 95%;
+    padding: 8px 14px;
+  }
+  .mission-text {
+    font-size: 14px;
+  }
+}

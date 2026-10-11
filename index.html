@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>因數與倍數特戰靶場｜手機・平板・電腦</title>
+  <meta name="description" content="支援手機、平板與電腦的因數與倍數射擊遊戲。拖曳瞄準，按鍵開火，答錯扣血。">
+  <meta name="theme-color" content="#0b1726">
+  
+  <!-- CSS 樣式 -->
+  <link rel="stylesheet" href="css/valorant-theme.css">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/upgrade.css">
+  <link rel="stylesheet" href="css/fps.css?v=badge-8">
+  <link rel="stylesheet" href="css/mobile.css?v=badge-8">
+</head>
+<body class="upgrade">
+
+  <!-- 頂部戰術抬頭顯示器 (HUD) -->
+  <header class="tactical-hud" id="tacticalHud" style="display: none;">
+    <div class="hud-user-info">
+      <div class="hud-avatar">VT</div>
+      <div>
+        <div class="val-title" id="hudStudentName" style="font-size: 16px; color: #fff;">特工學員</div>
+        <div style="font-size: 12px; color: var(--val-cyan);" id="hudClassName">五年一班 #01</div>
+      </div>
+      <span class="val-badge val-badge-cyan" id="hudLevelBadge">LEVEL 01</span>
+    </div>
+
+    <div class="hud-metrics">
+      <div class="hud-stat-box">
+        <span class="hud-stat-label">SCORE // 戰術積分</span>
+        <span class="hud-stat-val cyan" id="hudScore">0</span>
+      </div>
+      <div class="hud-stat-box">
+        <span class="hud-stat-label">STREAK // 連擊</span>
+        <span class="hud-stat-val gold" id="hudCombo">x0</span>
+      </div>
+      <div class="hud-stat-box">
+        <span class="hud-stat-label">TIME // 倒數計時</span>
+        <span class="hud-stat-val red" id="hudTimer">03:00</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="btn-val btn-val-ghost" id="btnAudioToggle" style="padding: 6px 14px; font-size: 13px;">🔊 音效</button>
+      <a href="teacher.html" class="btn-val btn-val-ghost" style="padding: 6px 14px; font-size: 13px; text-decoration: none;">📊 教師後台</a>
+      <button class="btn-val btn-val-ghost" id="btnLogout" style="padding: 6px 14px; font-size: 13px;">登出</button>
+    </div>
+  </header>
+
+  <!-- 介面 1：學生登記登入畫面 (Login Screen) -->
+  <div id="loginScreen" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="val-card" style="max-width: 480px; width: 100%;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="val-badge val-badge-red" style="margin-bottom: 8px;">MATH TRAINING // WEB EDITION</span>
+        <h1 style="color: #fff; font-size: 26px; margin: 8px 0;">因數與倍數特戰靶場</h1>
+        <div class="intro-art" aria-hidden="true"><span>×</span><b>24</b><span>÷</span><i>鎖定目標 · 找出規律</i></div>
+        <p style="color: var(--val-gray-muted); font-size: 13px;">
+          手機拖曳瞄準、按鍵開火；電腦滑鼠操作。從因數與倍數，一路挑戰生活任務。
+        </p>
+      </div>
+
+      <form id="studentLoginForm" style="display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <label for="inputClass" style="display: block; font-family: var(--val-font-display); font-size: 12px; color: var(--val-gray-muted); margin-bottom: 6px; letter-spacing: 1px;">
+            CLASS // 班級
+          </label>
+          <input type="text" id="inputClass" class="val-input" value="五年一班" placeholder="例：五年一班" required>
+        </div>
+
+        <div>
+          <label for="inputId" style="display: block; font-family: var(--val-font-display); font-size: 12px; color: var(--val-gray-muted); margin-bottom: 6px; letter-spacing: 1px;">
+            STUDENT ID // 座號 / 學號
+          </label>
+          <input type="text" id="inputId" class="val-input" placeholder="例：05" required autofocus>
+        </div>
+
+        <div>
+          <label for="inputName" style="display: block; font-family: var(--val-font-display); font-size: 12px; color: var(--val-gray-muted); margin-bottom: 6px; letter-spacing: 1px;">
+            AGENT NAME // 特工學生姓名
+          </label>
+          <input type="text" id="inputName" class="val-input" placeholder="例：林小宇" required>
+        </div>
+
+        <button type="submit" class="btn-val" style="margin-top: 10px; width: 100%;">
+          開始特訓 →
+        </button>
+      </form>
+
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--val-border); text-align: center;">
+        <a href="teacher.html" style="color: var(--val-cyan); font-size: 13px; text-decoration: none; font-family: var(--val-font-display);">
+          ⚡ 教師專用學習數據儀表板 (點此進入) ➔
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 介面 2：任務簡報與關卡選擇 (Level Select Screen) -->
+  <div id="levelSelectScreen" style="display: none; padding: 30px 20px;">
+    <div style="text-align: center; max-width: 800px; margin: 0 auto 30px auto;">
+      <span class="val-badge val-badge-cyan">MISSION BRIEFING // 戰術任務簡報</span>
+      <h2 style="font-size: 32px; color: #fff; margin: 10px 0;">數字是目標，思考才是武器。</h2>
+      <p style="color: var(--val-gray-muted); font-size: 14px; line-height: 1.6;">
+        各關卡必須達到 <strong style="color: var(--val-cyan);">85 分以上</strong> 方可解鎖下一階段！95 分以上榮獲三星榮譽特工！
+      </p>
+    </div>
+
+    <div class="mode-panel">
+      <label><input type="checkbox" id="practiceMode"> 自由練習模式</label>
+      <p>三關全開、不限時、殭屍減速；同樣有血量，練習不寫入正式成績。</p>
+      <span class="mode-note">100 HP · 答錯 −20 HP · 歸零結束。正式挑戰每關 3 分鐘，85 分解鎖。</span>
+    </div>
+    <p class="web-version-note">網頁版 v3.7 · 之後更新此網址，重新整理即可看到最新版。成績保存在目前裝置的瀏覽器。</p>
+    <!-- 關卡清單網格 -->
+    <div class="level-grid">
+      <!-- 關卡 1 -->
+      <div class="level-card" id="levelCard1">
+        <div>
+          <div class="level-number-tag">01</div><div class="level-art art-1" aria-hidden="true"><svg viewBox="0 0 320 160" fill="none" stroke="currentColor" stroke-width="2"><circle cx="160" cy="80" r="58"/><circle cx="160" cy="80" r="40"/><path d="M70 80h45m90 0h45M160 15v30m0 70v30"/><text x="160" y="91">24</text></svg></div>
+          <span class="val-badge val-badge-cyan" style="margin-bottom: 12px;">辨認規律 // 3D 標靶</span>
+          <h3 style="color: #fff; font-size: 22px; margin-bottom: 10px;">因數與倍數辨析靶場</h3>
+          <p style="color: var(--val-gray-muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+            觀察題目中的整除關係，用中央準星命中正確數字。先分清楚因數與倍數，再出手。
+          </p>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div class="star-rating" id="level1Stars">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <div style="font-family: var(--val-font-display); font-size: 18px; color: var(--val-cyan);" id="level1Score">-- 分</div>
+          </div>
+          <button class="btn-val btn-val-cyan btn-enter-level" data-level="1" style="width: 100%;">開始作戰</button>
+        </div>
+      </div>
+
+      <!-- 關卡 2 -->
+      <div class="level-card locked" id="levelCard2">
+        <div>
+          <div class="level-number-tag">02</div><div class="level-art art-2" aria-hidden="true"><svg viewBox="0 0 320 160" fill="none" stroke="currentColor" stroke-width="2"><path d="M121 108V48q39-37 78 0v60l-18 10-42-3zM120 60l-14 28 14 9m79-37 14 28-14 9"/><circle cx="144" cy="65" r="12"/><circle cx="177" cy="66" r="10"/><path d="M144 99l8-9 15 2 9 9m-29-21 4-5m15 5-4-5M92 133h135"/></svg></div>
+          <span class="val-badge val-badge-red" style="margin-bottom: 12px;">進階應用 // 3D 殭屍防守</span>
+          <h3 style="color: #fff; font-size: 22px; margin-bottom: 10px;">公因數與公倍數特戰防禦</h3>
+          <p style="color: var(--val-gray-muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+            殭屍正朝你靠近。計算最大公因數或最小公倍數，瞄準帶著正確答案的目標。
+          </p>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div class="star-rating" id="level2Stars">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <div style="font-family: var(--val-font-display); font-size: 18px; color: var(--val-red);" id="level2Score">-- 分</div>
+          </div>
+          <button class="btn-val btn-enter-level" data-level="2" style="width: 100%;" disabled>未解鎖</button>
+        </div>
+      </div>
+
+      <!-- 關卡 3 -->
+      <div class="level-card locked" id="levelCard3">
+        <div>
+          <div class="level-number-tag">03</div><div class="level-art art-3" aria-hidden="true"><svg viewBox="0 0 320 160" fill="none" stroke="currentColor" stroke-width="2"><path d="M109 59l50-28 53 28-53 30zM109 59v55l50 29V89m53-30v55l-53 29M131 47l52 28m-47 27 23 14 26-15"/><circle cx="241" cy="43" r="15"/><path d="M237 36v8h7"/></svg></div>
+          <span class="val-badge val-badge-gold" style="margin-bottom: 12px;">生活決策 // 3D 挑戰</span>
+          <h3 style="color: #fff; font-size: 22px; margin-bottom: 10px;">生活情境決策混合戰</h3>
+          <p style="color: var(--val-gray-muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+            平分、週期、拼排：先理解生活情境，再決定用最大公因數還是最小公倍數。
+          </p>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div class="star-rating" id="level3Stars">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <div style="font-family: var(--val-font-display); font-size: 18px; color: var(--val-gold);" id="level3Score">-- 分</div>
+          </div>
+          <button class="btn-val btn-enter-level" data-level="3" style="width: 100%;" disabled>未解鎖</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 概念快速備忘錄 -->
+    <div class="val-card cyan-edge" style="max-width: 1100px; margin: 30px auto; padding: 20px;">
+      <h4 style="color: var(--val-cyan); font-size: 16px; margin-bottom: 10px;">📋 特工戰術作戰口訣備忘錄 (Tactical Memo)</h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; font-size: 13px; color: var(--val-gray-light);">
+        <div style="background: rgba(15, 25, 35, 0.6); padding: 12px; border-left: 3px solid var(--val-cyan);">
+          <strong style="color: var(--val-cyan);">因數 vs 倍數：</strong>
+          『因數小或等，整除不留餘』；『倍數大或等，乘法放大去』。
+        </div>
+        <div style="background: rgba(15, 25, 35, 0.6); padding: 12px; border-left: 3px solid var(--val-red);">
+          <strong style="color: var(--val-red);">情境判斷口訣：</strong>
+          『平分、分裝、裁切等長』找【最大公因數】！『同時相遇、週期重疊、拼成大正方形』找【最小公倍數】！
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 介面 3：遊戲戰鬥視窗 (Game Viewport Screen) -->
+  <div id="gameViewScreen" style="display: none; position: relative;">
+    
+    <div class="mission-toolbar">
+      <span id="questionProgress">第 1 題</span>
+      <div class="progress-track"><div id="questionProgressFill"></div></div>
+      <div id="playerHealth" class="player-health" role="progressbar" aria-label="玩家血量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <span class="health-icon">♥</span><div class="health-main"><div class="health-label">生命值 <strong id="playerHealthText">100 / 100</strong></div><div class="health-track"><div id="playerHealthFill"></div></div></div>
+      </div>
+      <span id="runModeLabel">正式挑戰</span>
+      <button class="btn-val btn-val-ghost" id="btnFullscreen">全螢幕</button>
+      <button class="btn-val btn-val-ghost" id="btnPause">暫停</button>
+      <button class="btn-val btn-val-ghost" id="btnExit">返回選單</button>
+    </div>
+    <div id="compatibilityNotice" style="display:none;padding:12px 20px;background:#403421;color:#ffe3aa;font-size:13px;line-height:1.6" role="status"></div>
+    <!-- 頂部任務題目橫幅 -->
+    <div class="mission-prompt-bar">
+<div class="mission-eyebrow"><span class="mission-tag">CURRENT MISSION</span><small id="missionConcept">算好再瞄準</small></div>
+      <span class="mission-text" id="missionPromptText">正在載入戰術目標...</span>
+    </div>
+
+    <div class="answer-legend" id="answerLegend" aria-label="對應標靶的答案選項"></div>
+
+    <!-- 擊殺橫幅通知 -->
+    <div class="kill-banner" id="killBanner">
+      ELIMINATED
+      <div class="kill-subtext" id="killBannerSub">+20 PTS</div>
+    </div>
+
+    <!-- 遊戲主畫布容器 -->
+    <div class="game-viewport-container" id="gameViewport">
+      <!-- 關卡 1 & 3 使用的 2D Canvas -->
+      <canvas id="gameCanvas2D"></canvas>
+      
+      <div id="fpsCrosshair" class="fps-crosshair" style="display:none" aria-hidden="true"><i></i><b></b><em></em><span></span></div>
+      <div id="aimOverlay" class="aim-overlay">
+        <div class="aim-card">
+          <span class="aim-kicker">FIRST PERSON / 數學特訓</span>
+          <h2>準備好，鎖定目標。</h2>
+          <p id="aimInstructions">滑鼠控制視角，左鍵向中央準星射擊。<br>答錯扣 20 HP；看完解析後可以再試。</p>
+          <label class="sensitivity-label" for="aimSensitivity">滑鼠靈敏度 <input id="aimSensitivity" type="range" min="1" max="5" step="0.25" value="2"></label>
+          <button class="btn-val btn-val-cyan" id="btnCaptureAim">進入第一人稱瞄準</button>
+          <button class="btn-val btn-val-ghost" id="btnDragAim">拖曳模式</button>
+          <small>Esc 暫停並釋放滑鼠。若瀏覽器不支援鎖定，請選拖曳模式。</small>
+        </div>
+      </div>
+      <!-- Three.js 畫布會掛載於此 -->
+    </div>
+
+    <!-- 關卡 2 專用：戰術雷達小地圖 (Minimap) -->
+    <div class="radar-minimap" id="radarContainer" style="display: none;">
+      <div class="radar-sweep"></div>
+      <canvas id="radarCanvas" width="160" height="160"></canvas>
+      <div class="radar-center-blip"></div>
+    </div>
+
+    <!-- 關卡 2 專用：防禦防線護盾 HP 條 -->
+    <div class="barrier-hp-box" id="barrierContainer" style="display: none;">
+      <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: var(--val-font-display);">
+        <span style="color: var(--val-cyan);">PERIMETER SHIELD // 防線護盾</span>
+        <span id="barrierHpText" style="color: #fff; font-weight: 700;">100%</span>
+      </div>
+      <div class="hp-bar-bg">
+        <div class="hp-bar-fill" id="barrierHpFill"></div>
+      </div>
+    </div>
+
+    <div class="control-hint" id="controlHint">滑鼠轉動視角 · 中央準星瞄準 · 左鍵射擊 · Esc 暫停</div>
+    <!-- 行動裝置觸控開火鍵 (Touch Fire Trigger) -->
+    <button class="mobile-touch-trigger" id="mobileFireBtn" aria-label="向中央準星開火"><span>◎</span>開火</button>
+  </div>
+
+  <div class="val-modal-overlay" id="pauseModal" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <div class="val-modal-box" style="text-align:center">
+      <span class="val-badge val-badge-cyan">TAKE A BREATH</span>
+      <h2 id="pauseTitle">任務已暫停</h2>
+      <p style="margin:20px 0">想好再出手。目標與倒數都已暫停。</p>
+      <button class="btn-val btn-val-cyan" id="btnContinue">繼續挑戰</button>
+    </div>
+  </div>
+  <!-- 彈出視窗 1：答錯鷹架提示視窗 (Remediation Modal) -->
+  <div class="val-modal-overlay" id="remediationModal">
+    <div class="val-modal-box remediation-box">
+      <div class="corner-decors">TACTICAL INTEL // SCAFFOLDING</div>
+      <span class="val-badge val-badge-red" style="margin-bottom: 10px;">💡 先看看線索，再試一次</span>
+      <h3 id="remediationTitle" style="color: #fff; font-size: 20px; margin-bottom: 8px;">題目提示</h3>
+      
+      <div style="color: var(--val-red); font-family: var(--val-font-display); font-size: 14px;" id="remediationChoice">
+        你的選擇：--
+      </div>
+
+      <div class="remediation-concept">
+        <strong style="color: #fff;">💡 觀念解析：</strong>
+        <p id="remediationExplanation" style="margin-top: 6px; color: var(--val-gray-light); font-size: 14px;">
+          解析文字...
+        </p>
+      </div>
+
+      <div class="remediation-hint">
+        <p id="remediationHint" style="font-size: 14px;">
+          提示文字...
+        </p>
+      </div>
+
+      <div style="text-align: right;">
+        <button class="btn-val btn-val-cyan" id="btnResumeMission">
+          RESUME MISSION // 重新鎖定目標繼續
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈出視窗 2：關卡通關結算視窗 (Result Modal) -->
+  <div class="val-modal-overlay" id="resultModal">
+    <div class="val-modal-box" style="text-align: center; border-color: var(--val-cyan);">
+      <div class="corner-decors">OPERATION REPORT // DEBRIEF</div>
+      <span class="val-badge val-badge-cyan" style="margin-bottom: 12px;">戰術作戰結果</span>
+      <h2 id="resultTitle" style="color: #fff; font-size: 28px; margin-bottom: 10px;">MISSION ACCOMPLISHED</h2>
+
+      <div class="stars-huge" id="resultStars">
+        <span class="star active">★</span>
+        <span class="star active">★</span>
+        <span class="star">★</span>
+      </div>
+
+      <div style="font-family: var(--val-font-display); font-size: 42px; font-weight: 900; color: var(--val-cyan); margin-bottom: 10px;" id="resultScore">
+        90 分
+      </div>
+
+      <p id="resultFeedback" style="color: var(--val-gray-light); font-size: 15px; line-height: 1.6; max-width: 480px; margin: 0 auto 24px auto;">
+        任務回饋評價文字...
+      </p>
+
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-val btn-val-ghost" id="btnReturnMenu">返回選單</button>
+        <button class="btn-val btn-val-ghost" id="btnRetryLevel">再次挑戰</button>
+        <button class="btn-val btn-val-cyan" id="btnNextLevel">進入下一關 ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript 腳本載入 (優先本地，次之 CDN 備援) -->
+  <script src="lib/three.min.js"></script>
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+    }
+  </script>
+  <script src="js/audio.js?v=duck-1"></script>
+  <script src="js/questions.js?v=badge-8"></script>
+  <script src="js/storage.js?v=badge-8"></script>
+  <script src="js/session.js?v=badge-8"></script>
+  <script src="js/level1-2d.js?v=badge-8"></script>
+  <script src="js/level2-3d.js?v=badge-8"></script>
+  <script src="js/level3-hybrid.js?v=badge-8"></script>
+  <script src="js/game-engine.js?v=badge-8"></script>
+</body>
+</html>

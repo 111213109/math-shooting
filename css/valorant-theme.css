@@ -1,0 +1,277 @@
+/**
+ * valorant-theme.css - 特戰英豪 (Valorant) 視覺風格主題系統
+ * 戰術科技感、高對比俐落切角、發光霓虹細節、科幻軍事抬頭顯示風格
+ */
+
+
+:root {
+  --val-bg-deep: #0b1117;
+  --val-bg-dark: #0f1923;
+  --val-bg-card: rgba(23, 34, 46, 0.88);
+  --val-bg-surface: #192734;
+  --val-red: #ff4655;
+  --val-red-hover: #ff2b3d;
+  --val-cyan: #00f5d4;
+  --val-cyan-glow: rgba(0, 245, 212, 0.45);
+  --val-gold: #ffd166;
+  --val-gray-light: #ece8e1;
+  --val-gray-muted: #768079;
+  --val-border: rgba(236, 232, 225, 0.18);
+  --val-font-display: 'Chakra Petch', 'Rajdhani', sans-serif;
+  --val-font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --val-clip-corner: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  --val-clip-corner-sm: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: var(--val-bg-deep);
+  color: var(--val-gray-light);
+  font-family: var(--val-font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 20% 15%, rgba(255, 70, 85, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 85%, rgba(0, 245, 212, 0.08) 0%, transparent 40%),
+    linear-gradient(rgba(15, 25, 35, 0.95), rgba(11, 17, 23, 0.98)),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.25) 2px, rgba(0, 0, 0, 0.25) 4px);
+  position: relative;
+}
+
+/* 戰術背景掃描線與裝飾標誌 */
+body::before {
+  content: "DEF_MATH // PROTOCOL";
+  position: fixed;
+  top: 18px;
+  right: 25px;
+  font-family: var(--val-font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(236, 232, 225, 0.2);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 戰術標題文字 */
+h1, h2, h3, h4, .val-title {
+  font-family: var(--val-font-display);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+/* 戰術按鈕 (Valorant Button) */
+.btn-val {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  background-color: var(--val-red);
+  color: #ffffff;
+  font-family: var(--val-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  clip-path: var(--val-clip-corner-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(255, 70, 85, 0.35);
+  text-decoration: none;
+  gap: 8px;
+}
+
+.btn-val:hover {
+  background-color: var(--val-red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.6);
+}
+
+.btn-val:active {
+  transform: translateY(1px);
+}
+
+.btn-val-cyan {
+  background-color: var(--val-cyan);
+  color: #0b1117;
+  box-shadow: 0 4px 15px var(--val-cyan-glow);
+}
+
+.btn-val-cyan:hover {
+  background-color: #38ef7d;
+  box-shadow: 0 6px 22px rgba(0, 245, 212, 0.7);
+}
+
+.btn-val-ghost {
+  background: transparent;
+  color: var(--val-gray-light);
+  border: 1px solid var(--val-border);
+  box-shadow: none;
+}
+
+.btn-val-ghost:hover {
+  background: rgba(236, 232, 225, 0.1);
+  border-color: var(--val-cyan);
+  color: var(--val-cyan);
+}
+
+/* 戰術卡片與容器 */
+.val-card {
+  background: var(--val-bg-card);
+  border: 1px solid var(--val-border);
+  clip-path: var(--val-clip-corner);
+  padding: 24px;
+  position: relative;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.val-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--val-red);
+}
+
+.val-card.cyan-edge::after {
+  background: var(--val-cyan);
+}
+
+/* 輸入框設計 */
+.val-input {
+  width: 100%;
+  background: rgba(15, 25, 35, 0.85);
+  border: 1px solid rgba(236, 232, 225, 0.25);
+  color: #ffffff;
+  padding: 12px 16px;
+  font-family: var(--val-font-display);
+  font-size: 15px;
+  clip-path: var(--val-clip-corner-sm);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.val-input:focus {
+  border-color: var(--val-cyan);
+  box-shadow: 0 0 12px var(--val-cyan-glow);
+  background: rgba(25, 39, 52, 0.95);
+}
+
+/* 戰術徽章 Tag */
+.val-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--val-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  clip-path: var(--val-clip-corner-sm);
+  text-transform: uppercase;
+}
+
+.val-badge-red {
+  background: rgba(255, 70, 85, 0.2);
+  color: var(--val-red);
+  border: 1px solid var(--val-red);
+}
+
+.val-badge-cyan {
+  background: rgba(0, 245, 212, 0.2);
+  color: var(--val-cyan);
+  border: 1px solid var(--val-cyan);
+}
+
+.val-badge-gold {
+  background: rgba(255, 209, 102, 0.2);
+  color: var(--val-gold);
+  border: 1px solid var(--val-gold);
+}
+
+/* 戰術星級顯示 */
+.star-rating {
+  display: inline-flex;
+  gap: 4px;
+  font-size: 18px;
+}
+
+.star-rating .star {
+  color: rgba(236, 232, 225, 0.2);
+  transition: color 0.3s ease;
+}
+
+.star-rating .star.active {
+  color: var(--val-gold);
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.6);
+}
+
+/* 彈出視窗 Modal */
+.val-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 17, 23, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+
+.val-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.val-modal-box {
+  background: #111a24;
+  border: 2px solid var(--val-red);
+  clip-path: var(--val-clip-corner);
+  width: 100%;
+  max-width: 620px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(255, 70, 85, 0.35);
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.val-modal-overlay.active .val-modal-box {
+  transform: translateY(0) scale(1);
+}
+
+/* 戰術情報浮水印與裝飾角標 */
+.corner-decors {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: var(--val-font-display);
+  font-size: 10px;
+  color: var(--val-cyan);
+  opacity: 0.6;
+}
+
+/* 響應式微調 */
+@media (max-width: 768px) {
+  .btn-val {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  .val-card {
+    padding: 18px;
+  }
+}

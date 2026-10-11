@@ -1,0 +1,57 @@
+/* v1 visual refresh: local CSS, no extra dependencies. */
+.upgrade { --val-gray-muted: #a5b4c5; --val-border: rgba(169,196,221,.23); background: radial-gradient(ellipse at 12% 5%,#183746 0,transparent 48%),radial-gradient(ellipse at 92% 80%,#291c33 0,transparent 45%),#0a121c; }
+.upgrade::before { content:'MATH / TRAINING LAB'; color:#628295; }
+.upgrade .val-card,.upgrade .level-card { clip-path:none; border-radius:18px; background:linear-gradient(145deg,rgba(33,50,68,.94),rgba(14,25,39,.97)); box-shadow:0 16px 50px #0003; }
+.upgrade #loginScreen .val-card { max-width:540px!important; padding:32px; border-top:3px solid var(--val-cyan); }
+.intro-art { height:112px; display:flex; align-items:center; justify-content:center; gap:25px; position:relative; margin:12px 0 24px; border-radius:12px; background:repeating-linear-gradient(90deg,transparent 0 29px,#ffffff05 30px),repeating-linear-gradient(0deg,transparent 0 29px,#ffffff05 30px),#0b1a29; overflow:hidden; }
+.intro-art b { color:var(--val-cyan); font-size:52px; text-shadow:0 0 35px #00f5d466; border:1px solid #00f5d455; width:82px; height:82px; border-radius:50%; }
+.intro-art span { font-size:42px; color:#8eacc5; }
+.intro-art i { position:absolute; bottom:2px; font-size:10px; letter-spacing:3px; font-style:normal; color:#b3c2cf; }
+.upgrade .val-input { border-radius:8px; background:#0b1726; padding:13px 16px; }
+.upgrade .btn-val { clip-path:none; border-radius:8px; letter-spacing:.4px; transition:background .2s,transform .2s; }
+.upgrade .btn-val:focus-visible,.upgrade input:focus-visible { outline:3px solid #ffd166; outline-offset:3px; }
+.upgrade .level-grid { padding:0; gap:20px; }
+.upgrade .level-card { border-top:3px solid var(--val-cyan); padding-top:35px; }
+.upgrade #levelCard2 { border-top-color:var(--val-red); }
+.upgrade #levelCard3 { border-top-color:var(--val-gold); }
+.upgrade .level-card.locked { opacity:.8; filter:none; }
+.upgrade .level-card.locked::before { top:10px; font-size:11px; }
+.upgrade .level-number-tag { color:#ffffff0d; font-size:92px; }
+.mode-panel { max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:10px 20px; border:1px solid #375268; background:#102333; border-radius:12px; padding:18px 22px; }
+.mode-panel label { color:var(--val-cyan); font-weight:bold; cursor:pointer; display:flex; gap:10px; align-items:center; }
+.mode-panel input { width:18px; height:18px; accent-color:var(--val-cyan); }
+.mode-panel p,.mode-note { font-size:13px; line-height:1.7; color:#b1c2d1; }
+.mode-note { flex-basis:100%; }
+.upgrade .tactical-hud { gap:14px; flex-wrap:wrap; padding:12px 20px; background:#0b1726; }
+.upgrade .hud-stat-label { letter-spacing:.3px; }
+.mission-toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:10px 20px; background:#132638; font-size:13px; color:#d5e6f5; }
+.mission-toolbar .btn-val { font-size:12px; padding:7px 12px; }
+.progress-track { flex:1; min-width:40px; max-width:260px; height:5px; background:#334759; border-radius:5px; overflow:hidden; }
+#questionProgressFill { width:0; height:100%; background:var(--val-cyan); transition:width .3s; }
+#runModeLabel { margin-left:auto; color:var(--val-cyan); }
+.upgrade .mission-prompt-bar { position:relative; top:auto; left:auto; transform:none; max-width:none; width:100%; text-align:left; padding:16px 24px; border:0; border-bottom:1px solid #315165; border-radius:0; clip-path:none; box-shadow:none; background:#0d1e2d; min-height:72px; }
+.upgrade .mission-text { line-height:1.6; font-size:20px; letter-spacing:0; }
+.upgrade .mission-tag { background:#193f46; color:var(--val-cyan); border-radius:4px; }
+.upgrade .game-viewport-container { height:calc(100dvh - 242px); min-height:400px; }
+.control-hint { padding:10px 20px; color:#a7bbcb; font-size:12px; background:#0b1726; text-align:center; }
+.upgrade .val-modal-box { clip-path:none; border-radius:16px; max-height:88dvh; overflow:auto; }
+.upgrade .val-modal-overlay { backdrop-filter:blur(6px); }
+.upgrade .kill-banner { top:180px; pointer-events:none; }
+.upgrade .remediation-concept,.upgrade .remediation-hint { line-height:1.9; }
+.upgrade .mobile-touch-trigger { display:none!important; }
+@media(max-width:700px) {
+ .upgrade .hud-user-info { gap:8px; }
+ .upgrade .hud-metrics { gap:12px; }
+ .upgrade .hud-stat-box { min-width:58px; }
+ .upgrade .hud-stat-val { font-size:20px; }
+ .upgrade .level-grid { grid-template-columns:1fr; }
+ .upgrade .mission-prompt-bar { padding:12px 16px; gap:10px; }
+ .upgrade .mission-text { font-size:17px; }
+ .upgrade .mission-tag { display:none; }
+ .upgrade .game-viewport-container { min-height:390px; height:52dvh; }
+ .upgrade .radar-minimap { width:90px; height:90px; bottom:55px; left:10px; }
+ .upgrade .barrier-hp-box { bottom:55px; width:160px; }
+ #runModeLabel { margin-left:0; }
+ .upgrade #loginScreen .val-card { padding:22px; }
+}
+@media(prefers-reduced-motion:reduce) { .upgrade * { transition:none!important; } }

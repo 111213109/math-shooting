@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教師學習數據儀表板 - 特戰數學戰情室</title>
+  
+  <link rel="stylesheet" href="css/valorant-theme.css">
+  <link rel="stylesheet" href="css/game.css">
+  <style>
+    .teacher-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px 20px 60px 20px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: rgba(23, 34, 46, 0.9);
+      border: 1px solid var(--val-border);
+      clip-path: var(--val-clip-corner-sm);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: rgba(15, 25, 35, 0.9);
+      border: 1px solid var(--val-border);
+      clip-path: var(--val-clip-corner-sm);
+      margin-top: 14px;
+    }
+
+    table.val-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    table.val-table th {
+      background: rgba(25, 39, 52, 0.9);
+      color: var(--val-cyan);
+      font-family: var(--val-font-display);
+      letter-spacing: 1px;
+      padding: 12px 16px;
+      border-bottom: 2px solid rgba(0, 245, 212, 0.3);
+      white-space: nowrap;
+    }
+
+    table.val-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(236, 232, 225, 0.08);
+      color: var(--val-gray-light);
+      white-space: nowrap;
+    }
+
+    table.val-table tr:hover {
+      background: rgba(0, 245, 212, 0.04);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 28px 0 14px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-family: var(--val-font-display);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .rank-1 { background: #ff4655; color: #fff; box-shadow: 0 0 10px rgba(255, 70, 85, 0.6); }
+    .rank-2 { background: #ffd166; color: #0b1117; }
+    .rank-3 { background: #00f5d4; color: #0b1117; }
+    .rank-default { background: rgba(236, 232, 225, 0.2); color: #fff; }
+  </style>
+<link rel="stylesheet" href="css/mobile.css?v=mobile-1"></head>
+<body>
+
+  <!-- 教師導覽列 -->
+  <header class="tactical-hud">
+    <div class="hud-user-info">
+      <div class="hud-avatar" style="background: linear-gradient(135deg, var(--val-cyan), #045244);">TC</div>
+      <div>
+        <div class="val-title" style="font-size: 18px; color: #fff;">教師學習數據儀表板</div>
+        <div style="font-size: 12px; color: var(--val-cyan);">因數與倍數單元 // 學習成效分析戰情室</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <a href="index.html" class="btn-val btn-val-ghost" style="padding: 8px 16px; font-size: 13px; text-decoration: none;">🎮 進入學生作戰端</a>
+      <button class="btn-val btn-val-ghost" id="btnOpenFirebaseModal" style="padding: 8px 16px; font-size: 13px;">🔥 Firebase 設定</button>
+      <button class="btn-val btn-val-cyan" id="btnExportCSV" style="padding: 8px 18px; font-size: 13px;">📥 一鍵匯出 Excel/CSV</button>
+    </div>
+  </header>
+
+  <div class="teacher-container">
+
+    <!-- KPI 總覽指標網格 -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="hud-stat-label">TOTAL AGENTS // 學生人數</span>
+        <span class="hud-stat-val cyan" id="kpiTotalStudents">0 人</span>
+        <span style="font-size: 11px; color: var(--val-gray-muted); margin-top: 4px;">已登記作戰學生</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="hud-stat-label">AVG PASS RATE // 通關達成率</span>
+        <span class="hud-stat-val gold" id="kpiAvgPassRate">0%</span>
+        <span style="font-size: 11px; color: var(--val-gray-muted); margin-top: 4px;">全關卡通過 85 分比例</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="hud-stat-label">TOTAL STARS // 累計成就星星</span>
+        <span class="hud-stat-val gold" id="kpiTotalStars">0 ★</span>
+        <span style="font-size: 11px; color: var(--val-gray-muted); margin-top: 4px;">全班獲得星級加總</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="hud-stat-label">DATA SOURCE // 數據來源</span>
+        <span class="hud-stat-val" id="kpiDataSource" style="font-size: 16px; color: var(--val-cyan); margin-top: 6px;">本機快取模式</span>
+        <span style="font-size: 11px; color: var(--val-gray-muted); margin-top: 4px;">支援 Firebase 即時連動</span>
+      </div>
+    </div>
+
+    <!-- 快捷功能工具列 -->
+    <div class="val-card" style="padding: 14px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <label style="font-family: var(--val-font-display); font-size: 13px; color: var(--val-cyan);">班級篩選：</label>
+        <select id="selectClassFilter" class="val-input" style="width: auto; padding: 6px 14px;">
+          <option value="ALL">全部班級</option>
+        </select>
+
+        <input type="text" id="inputSearchStudent" class="val-input" placeholder="🔍 搜尋學生姓名或座號..." style="width: 220px; padding: 6px 12px;">
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-val btn-val-ghost" id="btnGenerateDemo" style="padding: 6px 14px; font-size: 12px;">🎲 載入模擬全班數據</button>
+        <button class="btn-val btn-val-ghost" id="btnClearData" style="padding: 6px 14px; font-size: 12px; color: var(--val-red); border-color: rgba(255, 70, 85, 0.4);">🗑️ 清除所有資料</button>
+      </div>
+    </div>
+
+    <!-- 區塊 1：各關平均闖關次數與花費時間 (分析學生是否卡關) -->
+    <div class="section-title">
+      <h3 style="color: #fff; font-size: 20px;">⏱️ 各關卡平均闖關次數與花費時間分析（卡關診斷）</h3>
+      <span class="val-badge val-badge-cyan">BOTTLENECK ANALYSIS</span>
+    </div>
+
+    <div class="val-card" style="padding: 20px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;" id="levelAnalyticsContainer">
+        <!-- 動態渲染各關卡卡關統計 -->
+      </div>
+    </div>
+
+    <!-- 區塊 2：全班高頻錯題排行榜 (精準課堂補救重點) -->
+    <div class="section-title">
+      <div>
+        <h3 style="color: #fff; font-size: 20px;">🔥 全班高頻錯題排行榜（課堂精準補救重點）</h3>
+        <p style="color: var(--val-gray-muted); font-size: 13px; margin-top: 4px;">
+          統計最多人答錯的題目與核心概念盲點，提供教師精準補救教學引導！
+        </p>
+      </div>
+      <span class="val-badge val-badge-red">CRITICAL ERRORS</span>
+    </div>
+
+    <div class="val-card" style="padding: 16px;">
+      <div id="wrongQuestionsList">
+        <!-- 動態渲染高頻錯題排行榜 -->
+      </div>
+    </div>
+
+    <!-- 區塊 3：學生座號、姓名、通關狀態與星級數據表 -->
+    <div class="section-title">
+      <h3 style="color: #fff; font-size: 20px;">📋 各班學生學習進度與通關成績總表</h3>
+      <span class="val-badge val-badge-gold">STUDENT PERFORMANCE ROSTER</span>
+    </div>
+
+    <div class="table-container">
+      <table class="val-table" id="studentsTable">
+        <thead>
+          <tr>
+            <th>班級</th>
+            <th>座號</th>
+            <th>姓名</th>
+            <th>Level 1 (因倍數)</th>
+            <th>Level 2 (公因公倍)</th>
+            <th>Level 3 (情境綜合)</th>
+            <th>總星級</th>
+            <th>累積作答時間</th>
+            <th>最後上線</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody">
+          <!-- 動態載入學生列表 -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Firebase 配置彈出視窗 (Modal) -->
+  <div class="val-modal-overlay" id="firebaseModal">
+    <div class="val-modal-box">
+      <div class="corner-decors">CLOUD STORAGE CONFIG</div>
+      <span class="val-badge val-badge-red" style="margin-bottom: 10px;">FIREBASE REALTIME DATABASE</span>
+      <h3 style="color: #fff; font-size: 20px; margin-bottom: 12px;">設定雲端資料庫連線</h3>
+      
+      <p style="color: var(--val-gray-muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+        若您有 Firebase 專案，請輸入 Realtime Database 網址即可即時同步全班學生作戰數據：
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--val-cyan); margin-bottom: 4px;">DATABASE URL</label>
+          <input type="text" id="inputFbUrl" class="val-input" placeholder="例：https://your-project-id.firebaseio.com">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--val-cyan); margin-bottom: 4px;">AUTH TOKEN / API KEY (選填)</label>
+          <input type="password" id="inputFbKey" class="val-input" placeholder="若資料庫設有安全性規則請填入">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+          <button class="btn-val btn-val-ghost" id="btnCloseFbModal">取消</button>
+          <button class="btn-val btn-val-cyan" id="btnSaveFbConfig">儲存設定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/questions.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/teacher.js"></script>
+</body>
+</html>
